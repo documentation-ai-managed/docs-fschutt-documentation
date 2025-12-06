@@ -1,0 +1,201 @@
+---
+title: Troubleshooting
+description: Common issues and solutions for Azul development
+---
+
+## Common Issues
+
+Azul development is generally straightforward, but like any complex framework, you may encounter issues during development. This guide covers the most common problems and their solutions.
+
+<ExpandableGroup>
+  <Expandable title="Build Errors" default-open="false">
+    ## Compilation Issues
+    
+    **Problem:** Getting compilation errors when building your Azul application.
+    
+    **Solutions:**
+    - Ensure you're using a compatible Rust/C compiler version
+    - Check that all dependencies are properly installed
+    - Verify your build configuration matches the target platform
+    - Update to the latest Azul version for bug fixes
+  </Expandable>
+  <Expandable title="Runtime Errors" default-open="false">
+    ## Application Crashes
+    
+    **Problem:** Your application crashes or behaves unexpectedly at runtime.
+    
+    **Solutions:**
+    - Enable debug logging to capture error messages
+    - Check for null pointer dereferences in C code
+    - Verify thread safety when using background threads
+    - Monitor memory usage for potential leaks
+  </Expandable>
+  <Expandable title="Performance Issues" default-open="false">
+    ## Slow Rendering
+    
+    **Problem:** UI feels sluggish or animations are not smooth.
+    
+    **Solutions:**
+    - Ensure GPU acceleration is enabled
+    - Reduce complex layout calculations
+    - Use appropriate component types for your data
+    - Profile your application to identify bottlenecks
+  </Expandable>
+</ExpandableGroup>
+
+## Platform-Specific Issues
+
+Different platforms may have unique requirements and limitations.
+
+<Tabs>
+  <Tab title="Windows" icon="monitor">
+    ## Windows Troubleshooting
+    
+    **Common Issues:**
+    - Visual Studio build tools not found
+    - UAC permission prompts
+    - DirectX compatibility problems
+    
+    **Solutions:**
+    ````bash
+    # Install Visual Studio Build Tools
+    vs_buildtools.exe --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+    
+    # Enable Developer Mode
+    reg add "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\AppModelUnlock" /v AllowDevelopmentWithoutDevLicense /t REG_DWORD /d 1
+    ````
+  </Tab>
+  <Tab title="macOS" icon="apple">
+    ## macOS Troubleshooting
+    
+    **Common Issues:**
+    - Code signing requirements
+    - Gatekeeper restrictions
+    - Metal graphics driver issues
+    
+    **Solutions:**
+    ````bash
+    # Disable Gatekeeper temporarily
+    sudo spctl --master-disable
+    
+    # Code sign for development
+    codesign --entitlements entitlements.plist -s "Developer ID" your-app.app
+    ````
+  </Tab>
+  <Tab title="Linux" icon="terminal">
+    ## Linux Troubleshooting
+    
+    **Common Issues:**
+    - Missing system libraries
+    - Wayland vs X11 compatibility
+    - GPU driver issues
+    
+    **Solutions:**
+    ````bash
+    # Install system dependencies
+    sudo apt install libx11-dev libgl1-mesa-dev libxcb1-dev
+    
+    # Force X11 backend
+    export AZUL_BACKEND=x11
+    ````
+  </Tab>
+</Tabs>
+
+## Debugging Techniques
+
+Effective debugging is essential for resolving complex issues in Azul applications.
+
+<Steps>
+  <Step title="Enable Logging" icon="file-text">
+    Configure comprehensive logging to capture detailed error information and application state.
+  </Step>
+  <Step title="Use Debug Tools" icon="settings">
+    Leverage platform-specific debugging tools like Visual Studio Debugger or gdb.
+  </Step>
+  <Step title="Isolate Issues" icon="search">
+    Create minimal test cases to reproduce problems in isolation.
+  </Step>
+  <Step title="Profile Performance" icon="bar-chart">
+    Use profiling tools to identify performance bottlenecks and memory issues.
+  </Step>
+</Steps>
+
+<Columns cols={2}>
+  <Card title="Logging Setup" icon="file-text" href="#logging">
+    Learn how to configure detailed logging for both development and production environments.
+  </Card>
+  <Card title="Debug Builds" icon="bug" href="#debugging">
+    Build applications with debug symbols and additional runtime checks.
+  </Card>
+</Columns>
+
+## Memory Management Issues
+
+Memory-related problems are common in GUI applications, especially when mixing Rust and C code.
+
+<Expandable title="Memory Leaks" default-open="false">
+  ## Detecting Memory Leaks
+  
+  **Rust Code:**
+  ````rust
+  // Use tools like valgrind or heaptrack
+  // cargo build --release
+  // valgrind --tool=memcheck ./target/release/your-app
+  ````
+  
+  **C Code:**
+  ````c
+  // Enable AddressSanitizer
+  // gcc -fsanitize=address -g your-code.c -o your-app
+  // ./your-app
+  ````
+  
+  Look for memory leaks in the output and fix resource management issues.
+</Expandable>
+
+<Callout kind="info">
+  Azul's Rust API provides memory safety guarantees, but C code requires careful manual memory management.
+</Callout>
+
+## Getting Help
+
+When you encounter issues that aren't covered here, several resources are available.
+
+<ExpandableGroup>
+  <Expandable title="Community Support" default-open="false">
+    Join our Discord server or forum to get help from the Azul community and maintainers.
+  </Expandable>
+  <Expandable title="Bug Reports" default-open="false">
+    File detailed bug reports on GitHub with reproduction steps and system information.
+  </Expandable>
+  <Expandable title="Documentation" default-open="false">
+    Check the API documentation and examples for clarification on framework usage.
+  </Expandable>
+</ExpandableGroup>
+
+## Performance Optimization
+
+If your application isn't performing as expected, consider these optimization strategies.
+
+<Tabs>
+  <Tab title="Rendering" icon="eye">
+    ## Optimize Rendering
+    
+    - Minimize layout recalculations
+    - Use efficient component hierarchies
+    - Batch UI updates
+    - Leverage GPU acceleration
+  </Tab>
+  <Tab title="Memory" icon="database">
+    ## Memory Optimization
+    
+    - Reuse component instances
+    - Implement object pooling
+    - Avoid unnecessary allocations
+    - Use appropriate data structures
+  </Tab>
+</Tabs>
+
+<Callout kind="success">
+  Most performance issues can be resolved through profiling and targeted optimizations. Start with the biggest bottlenecks first.
+</Callout>

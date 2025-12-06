@@ -1,0 +1,152 @@
+openapi: '3.0.0'
+info:
+  version: 1.0.0
+  title: Azul GUI Framework API
+  license:
+    name: MIT
+servers:
+  - url: http://azul-framework.io/v1
+paths:
+  /widgets:
+    get:
+      summary: Retrieves a comprehensive list of all GUI widgets currently available in the Azul framework, providing developers with detailed information about each widget's properties, supported events, and styling options to facilitate effective UI component selection and implementation in cross-platform desktop applications.
+      operationId: listWidgets
+      parameters:
+        - name: limit
+          in: query
+          description: Specifies the maximum number of widgets to return in a single API response, helping to manage large result sets and optimize network performance by allowing clients to request smaller, more manageable chunks of widget data.
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        200:
+          description: Provides a paginated collection of widget objects with complete metadata including identifiers, display names, supported platforms, and configuration details to enable developers to understand and utilize each widget effectively in their applications.
+          headers:
+            x-next:
+              description: Contains a URL link pointing to the next page of widget results when the total number of widgets exceeds the specified limit, enabling seamless pagination through large widget collections.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widgets'
+        default:
+          description: Indicates an unexpected error occurred during widget retrieval, providing error details to help developers diagnose and resolve API integration issues.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Creates a new custom GUI widget in the Azul framework by accepting widget configuration parameters, validating the input against framework constraints, and registering the widget for use in desktop applications across supported platforms.
+      operationId: createWidgets
+      responses:
+        201:
+          description: Confirms successful widget creation and returns the newly generated widget identifier along with its initial configuration state.
+        default:
+          description: Indicates an unexpected error occurred during widget creation, providing error details to help developers diagnose and resolve API integration issues.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /widgets/{widgetId}:
+    get:
+      summary: Fetches detailed information about a specific GUI widget identified by its unique widget identifier, including comprehensive metadata such as supported properties, event handlers, styling options, and platform compatibility details to assist developers in understanding widget capabilities and integration requirements.
+      operationId: showWidgetById
+      parameters:
+        - name: widgetId
+          in: path
+          required: true
+          description: Represents the unique identifier for the specific widget being requested, ensuring precise retrieval of widget information from the framework's widget registry.
+          schema:
+            type: string
+      responses:
+        200:
+          description: Returns complete widget details including configuration options, supported events, and usage examples to enable developers to implement the widget effectively in their applications.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Widgets'
+        default:
+          description: Indicates an unexpected error occurred during widget retrieval, providing error details to help developers diagnose and resolve API integration issues.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /themes:
+    get:
+      summary: Provides access to a collection of predefined visual themes available in the Azul framework, allowing developers to explore different styling options and color schemes that can be applied to their desktop applications for consistent and professional user interface design.
+      operationId: listThemes
+      responses:
+        200:
+          description: Returns an array of theme objects containing theme identifiers, display names, color palettes, and preview information to help developers select appropriate themes for their applications.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Themes'
+        default:
+          description: Indicates an unexpected error occurred during theme retrieval, providing error details to help developers diagnose and resolve API integration issues.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Enables developers to create custom visual themes for their Azul applications by submitting theme configuration data including color schemes, typography settings, and component styling rules that define the overall appearance and user experience of the application.
+      operationId: createThemes
+      responses:
+        201:
+          description: Confirms successful theme creation and provides the new theme identifier for reference in application configuration.
+        default:
+          description: Indicates an unexpected error occurred during theme creation, providing error details to help developers diagnose and resolve API integration issues.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Widget:
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        platform:
+          type: string
+        properties:
+          type: object
+    Widgets:
+      type: array
+      items:
+        $ref: '#/components/schemas/Widget'
+    Theme:
+      required:
+        - id
+        - name
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+        colors:
+          type: object
+        fonts:
+          type: object
+    Themes:
+      type: array
+      items:
+        $ref: '#/components/schemas/Theme'
+    Error:
+      required:
+        - code
+        - message
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string

@@ -1,0 +1,245 @@
+---
+title: Examples
+description: Practical code examples for building desktop applications with Azul
+---
+
+## Getting Started Examples
+
+These examples demonstrate how to build common UI patterns with Azul. Each example includes both Rust and C implementations to show the framework's versatility across programming languages.
+
+<Steps>
+  <Step title="Hello World" icon="star">
+    Create your first Azul application with a simple window and button.
+  </Step>
+  <Step title="Form Handling" icon="edit">
+    Build interactive forms with input validation and data binding.
+  </Step>
+  <Step title="Data Display" icon="table">
+    Present data in tables, lists, and custom layouts.
+  </Step>
+</Steps>
+
+## Hello World Application
+
+Let's start with a basic application that creates a window with a button. This example shows the fundamental structure of an Azul application.
+
+<Tabs>
+  <Tab title="Rust" icon="code">
+    ````rust
+    use azul::prelude::*;
+    
+    struct HelloWorld {
+        click_count: usize,
+    }
+    
+    impl Layout for HelloWorld {
+        fn layout(&self, _: LayoutInfo<Self>) -> Dom<Self> {
+            let button_text = format!("Clicked {} times", self.click_count);
+            
+            Button::new(button_text)
+                .dom()
+                .with_callback(On::MouseUp, Callback(|event, data| {
+                    data.click_count += 1;
+                    event.redraw();
+                }))
+        }
+    }
+    
+    fn main() {
+        let app = App::new(HelloWorld { click_count: 0 }, AppConfig::default());
+        app.run(Window::new(WindowCreateOptions::default(), css::native()).unwrap());
+    }
+    ````
+  </Tab>
+  <Tab title="C" icon="terminal">
+    ````c
+    #include <azul.h>
+    
+    typedef struct {
+        size_t click_count;
+    } hello_world_data_t;
+    
+    azul_dom_t* render_callback(azul_layout_info_t* info, void* data) {
+        hello_world_data_t* app_data = (hello_world_data_t*)data;
+        char button_text[50];
+        sprintf(button_text, "Clicked %zu times", app_data->click_count);
+        
+        return azul_button_create(button_text);
+    }
+    
+    void on_click(azul_event_t* event, void* data) {
+        hello_world_data_t* app_data = (hello_world_data_t*)data;
+        app_data->click_count++;
+        azul_event_redraw(event);
+    }
+    
+    int main() {
+        hello_world_data_t app_data = { .click_count = 0 };
+        azul_app_t* app = azul_app_create(&app_data, render_callback);
+        azul_button_set_on_click(app, on_click);
+        return azul_app_run(app);
+    }
+    ````
+  </Tab>
+</Tabs>
+
+<Callout kind="info">
+  This example demonstrates Azul's event-driven architecture and automatic UI updates when state changes.
+</Callout>
+
+## Interactive Form
+
+Building forms with validation is a common requirement. This example shows how to create a registration form with input fields and validation.
+
+<CodeGroup tabs="Rust,C">
+  ````rust
+  struct RegistrationForm {
+      username: String,
+      email: String,
+      password: String,
+      errors: Vec<String>,
+  }
+  
+  impl RegistrationForm {
+      fn validate(&mut self) {
+          self.errors.clear();
+          if self.username.is_empty() {
+              self.errors.push("Username is required".to_string());
+          }
+          if !self.email.contains('@') {
+              self.errors.push("Invalid email format".to_string());
+          }
+      }
+  }
+  ````
+  ````c
+  typedef struct {
+      char username[256];
+      char email[256]; 
+      char password[256];
+      char** errors;
+      size_t error_count;
+  } registration_form_t;
+  
+  void validate_form(registration_form_t* form) {
+      // Clear previous errors
+      for (size_t i = 0; i < form->error_count; i++) {
+          free(form->errors[i]);
+      }
+      free(form->errors);
+      form->error_count = 0;
+      
+      // Add validation logic
+      if (strlen(form->username) == 0) {
+          form->errors = realloc(form->errors, sizeof(char*) * ++form->error_count);
+          form->errors[form->error_count - 1] = strdup("Username required");
+      }
+  }
+  ````
+</CodeGroup>
+
+<Columns cols={2}>
+  <Card title="Input Validation" icon="check" href="#validation">
+    Real-time validation with visual feedback helps users correct errors immediately.
+  </Card>
+  <Card title="Data Binding" icon="link" href="#binding">
+    Automatic synchronization between UI components and application state.
+  </Card>
+</Columns>
+
+## Data Display
+
+Displaying data effectively is crucial for many applications. Azul provides flexible components for presenting information.
+
+<Expandable title="Table Example" default-open="false">
+  ## User Management Table
+  
+  ````rust
+  struct UserTable {
+      users: Vec<User>,
+      selected_user: Option<usize>,
+  }
+  
+  impl UserTable {
+      fn render_table(&self) -> Dom<Self> {
+          let mut table = Table::new()
+              .with_column("Name")
+              .with_column("Email")
+              .with_column("Role");
+          
+          for (i, user) in self.users.iter().enumerate() {
+              table.add_row(vec![
+                  user.name.clone(),
+                  user.email.clone(),
+                  user.role.to_string(),
+              ]);
+          }
+          
+          table.dom()
+      }
+  }
+  ````
+  
+  This example shows how to create sortable, filterable tables with selection support.
+</Expandable>
+
+<ExpandableGroup>
+  <Expandable title="List Views" default-open="false">
+    For simpler data presentation, use ListView components with custom item templates.
+  </Expandable>
+  <Expandable title="Charts and Graphs" default-open="false">
+    Azul supports various chart types for data visualization, including bar charts, line graphs, and pie charts.
+  </Expandable>
+</ExpandableGroup>
+
+## Advanced Examples
+
+These examples demonstrate more complex patterns and integrations.
+
+<Tabs>
+  <Tab title="Async Operations" icon="clock">
+    ## Handling Asynchronous Tasks
+    
+    Azul provides patterns for handling async operations without blocking the UI thread.
+    
+    ````rust
+    struct AsyncLoader {
+        loading: bool,
+        data: Option<String>,
+    }
+    
+    impl AsyncLoader {
+        fn load_data(&mut self) {
+            self.loading = true;
+            // Spawn async task
+            tokio::spawn(async {
+                let result = fetch_data().await;
+                // Update UI on main thread
+                azul::update_ui(move || {
+                    self.loading = false;
+                    self.data = Some(result);
+                });
+            });
+        }
+    }
+    ````
+  </Tab>
+  <Tab title="Custom Styling" icon="palette">
+    ## Advanced Theming
+    
+    Create custom themes and styles for unique application branding.
+    
+    ````rust
+    let custom_theme = Theme::new()
+        .with_color("primary", Color::from_hex("#1b5e9d"))
+        .with_font("heading", Font::new("Inter", 24.0))
+        .with_border_radius("button", 8.0);
+    
+    app.with_theme(custom_theme);
+    ````
+  </Tab>
+</Tabs>
+
+<Callout kind="success">
+  These examples provide a foundation for building complex desktop applications. Explore the API documentation for more detailed information about each component.
+</Callout>

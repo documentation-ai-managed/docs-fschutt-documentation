@@ -1,0 +1,163 @@
+---
+title: Architecture
+description: Understanding Azul's component-based architecture and rendering pipeline
+---
+
+## Azul Architecture Overview
+
+Azul's architecture is designed around a component-based model that separates concerns between UI logic, data management, and rendering. This separation allows for highly maintainable code while delivering exceptional performance through WebRender's GPU-accelerated pipeline.
+
+<Columns cols={3}>
+  <Card title="Component Model" icon="layers" href="#components">
+    Modular UI components that compose to create complex interfaces with clean separation of concerns.
+  </Card>
+  <Card title="Data Flow" icon="arrow-right" href="#data-flow">
+    Unidirectional data flow ensures predictable state management and easy debugging.
+  </Card>
+  <Card title="Rendering" icon="eye" href="#rendering">
+    GPU-accelerated rendering pipeline provides smooth animations and high-performance graphics.
+  </Card>
+</Columns>
+
+## Component Model
+
+Azul's component system is inspired by modern web frameworks but optimized for desktop applications. Components are self-contained units that manage their own state and rendering.
+
+<Tabs>
+  <Tab title="Basic Components" icon="box">
+    ## Fundamental Building Blocks
+    
+    Azul provides a rich set of built-in components:
+    
+    - **Layout Components:** Stack, Grid, Flexbox layouts
+    - **Input Components:** Button, TextInput, Checkbox, Radio
+    - **Display Components:** Label, Image, ProgressBar
+    - **Container Components:** ScrollView, TabView, Window
+    
+    <CodeGroup tabs="Rust,C">
+      ````rust
+      // Creating a simple button component
+      let button = Button::new("Click Me")
+          .on_click(|_| println!("Button clicked!"))
+          .style(ButtonStyle::Primary);
+      ````
+      ````c
+      // C equivalent for button creation
+      azul_button_t* button = azul_button_create("Click Me");
+      azul_button_set_on_click(button, on_click_callback);
+      azul_button_set_style(button, AZUL_BUTTON_STYLE_PRIMARY);
+      ````
+    </CodeGroup>
+  </Tab>
+  <Tab title="Custom Components" icon="settings">
+    ## Building Custom Components
+    
+    Create reusable components with custom behavior:
+    
+    - **State Management:** Local component state
+    - **Lifecycle Hooks:** Initialization and cleanup
+    - **Event Handling:** Custom event types
+    - **Styling:** Component-specific themes
+    
+    <Steps>
+      <Step title="Define Component" icon="edit">
+        Create a struct to hold component state and implement the Component trait.
+      </Step>
+      <Step title="Implement Methods" icon="code">
+        Add render, update, and event handling methods.
+      </Step>
+      <Step title="Register Component" icon="plus">
+        Register your component with the Azul application.
+      </Step>
+    </Steps>
+  </Tab>
+</Tabs>
+
+## Data Flow Architecture
+
+Azul implements a unidirectional data flow pattern that makes state management predictable and debugging straightforward.
+
+<CodeGroup tabs="Rust,C">
+  ````rust
+  // State management with Azul
+  struct AppState {
+      counter: i32,
+      user_name: String,
+  }
+  
+  impl AppState {
+      fn increment(&mut self) {
+          self.counter += 1;
+      }
+  }
+  ````
+  ````c
+  // C struct for application state
+  typedef struct {
+      int counter;
+      char* user_name;
+  } app_state_t;
+  
+  void increment_counter(app_state_t* state) {
+      state->counter++;
+  }
+  ````
+</CodeGroup>
+
+<Callout kind="tip">
+  Azul's state management prevents common GUI bugs like inconsistent UI state and race conditions.
+</Callout>
+
+## Rendering Pipeline
+
+The rendering pipeline is where Azul's performance shines. WebRender handles all graphics operations on the GPU for maximum efficiency.
+
+<Expandable title="WebRender Integration" default-open="false">
+  ## WebRender Architecture
+  
+  Azul integrates Mozilla's WebRender engine, which provides:
+  - **GPU Acceleration:** All rendering happens on the GPU
+  - **Async Operations:** Rendering doesn't block the UI thread
+  - **Memory Efficiency:** Minimal CPU-GPU memory transfers
+  - **Cross-Platform:** Consistent performance across platforms
+  
+  ````mermaid
+  graph LR
+      A[UI Logic] --> B[Layout Engine]
+      B --> C[WebRender]
+      C --> D[GPU Display]
+  ````
+</Expandable>
+
+## Memory Management
+
+Azul's memory management is designed to prevent leaks and ensure efficient resource usage across both Rust and C APIs.
+
+<ExpandableGroup>
+  <Expandable title="Rust Memory Safety" default-open="false">
+    Rust's ownership system prevents memory leaks and data races. Azul leverages this for automatic resource cleanup.
+  </Expandable>
+  <Expandable title="C Memory Management" default-open="false">
+    The C API provides clear ownership semantics with explicit allocation and deallocation functions.
+  </Expandable>
+</ExpandableGroup>
+
+## Threading Model
+
+Azul uses a carefully designed threading model that balances performance with safety.
+
+<Steps>
+  <Step title="Main Thread" icon="cpu">
+    UI logic and event handling run on the main thread to ensure thread safety.
+  </Step>
+  <Step title="Render Thread" icon="eye">
+    WebRender operates on a separate thread for smooth graphics performance.
+  </Step>
+  <Step title="Worker Threads" icon="users">
+    Background tasks can use worker threads for non-UI operations.
+  </Step>
+</Steps>
+
+<Callout kind="info">
+  Azul's threading model ensures that all UI operations are thread-safe while maximizing performance through parallel processing.
+</Callout>

@@ -1,0 +1,110 @@
+---
+title: Introduction
+description: Overview of Azul, a cross-platform desktop GUI framework for C and Rust developers
+---
+
+## Getting Started with Azul
+
+Azul is a powerful cross-platform desktop GUI framework that empowers developers to create native-looking applications using C and Rust programming languages. Built on the Mozilla WebRender rendering engine, Azul provides high-performance graphics rendering and a flexible architecture for building complex user interfaces. Whether you're building productivity tools, media applications, or enterprise software, Azul offers the tools needed to deliver polished desktop experiences across Windows, macOS, and Linux platforms.
+
+<Columns cols={3}>
+  <Card title="Fast Rendering" icon="zap" href="#performance">
+    Leverages Mozilla WebRender for GPU-accelerated graphics that deliver smooth 60 FPS animations and complex visual effects.
+  </Card>
+  <Card title="Cross-Platform" icon="globe" href="#platforms">
+    Native compilation for Windows, macOS, and Linux ensures consistent performance and appearance across all major desktop platforms.
+  </Card>
+  <Card title="Rust & C APIs" icon="code" href="#languages">
+    Full-featured APIs for both Rust and C developers, with comprehensive bindings and memory-safe abstractions.
+  </Card>
+</Columns>
+
+## Key Features
+
+Azul stands out with its unique combination of performance, safety, and developer experience. The framework's architecture separates the UI logic from rendering concerns, allowing you to focus on building great applications rather than fighting with low-level graphics APIs.
+
+<Tabs>
+  <Tab title="Performance" icon="zap">
+    ## High-Performance Rendering
+    
+    Azul's use of WebRender provides:
+    - GPU-accelerated rendering pipeline
+    - Hardware-optimized text rendering
+    - Efficient memory management
+    - Support for complex animations and transitions
+    
+    <CodeGroup tabs="Rust,C">
+      ````rust
+      // Initialize Azul application with high-performance settings
+      let app = AzulApp::new()
+          .with_vsync(true)
+          .with_multisampling(4)
+          .with_hardware_acceleration(true);
+      ````
+      ````c
+      // C API for performance configuration
+      azul_app_config_t config = {
+          .vsync = true,
+          .multisampling = 4,
+          .hardware_accel = true
+      };
+      azul_app_t* app = azul_app_create(&config);
+      ````
+    </CodeGroup>
+  </Tab>
+  <Tab title="Safety" icon="shield">
+    ## Memory Safety First
+    
+    When using Rust, Azul provides:
+    - Compile-time memory safety guarantees
+    - Thread-safe UI operations
+    - Automatic resource management
+    - Prevention of common GUI bugs
+    
+    <Callout kind="info">
+      Azul's Rust API prevents data races and memory corruption that plague traditional GUI frameworks.
+    </Callout>
+  </Tab>
+</Tabs>
+
+## Platform Support
+
+Azul applications compile natively for all major desktop platforms, ensuring your users get the best possible experience on their preferred operating system.
+
+<Steps>
+  <Step title="Choose Your Platform" icon="monitor">
+    Select your target platform - Azul supports Windows, macOS, and Linux with identical APIs.
+  </Step>
+  <Step title="Configure Build" icon="settings">
+    Set up your build system with platform-specific optimizations and dependencies.
+  </Step>
+  <Step title="Deploy" icon="upload">
+    Package your application using native installers and distribution methods.
+  </Step>
+</Steps>
+
+<Expandable title="System Requirements" default-open="false">
+  ## Minimum Requirements
+  
+  - **Operating System:** Windows 10+, macOS 10.15+, Ubuntu 18.04+
+  - **Memory:** 4GB RAM minimum, 8GB recommended
+  - **Graphics:** DirectX 11/OpenGL 3.3 compatible GPU
+  - **Storage:** 500MB free space for installation and build artifacts
+  
+  <Callout kind="tip">
+    Azul applications are lightweight and typically use less than 50MB of RAM at runtime.
+  </Callout>
+</Expandable>
+
+## Community and Support
+
+Join thousands of developers building desktop applications with Azul. Our active community provides support, shares best practices, and contributes to the framework's ongoing development.
+
+<ExpandableGroup>
+  <Expandable title="Getting Help" default-open="false">
+    Visit our community forums, Discord server, or GitHub repository for assistance with your Azul projects.
+  </Expandable>
+  <Expandable title="Contributing" default-open="false">
+    Contributions are welcome! Check our contribution guidelines for information on how to get involved.
+  </Expandable>
+</ExpandableGroup>

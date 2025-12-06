@@ -1,0 +1,117 @@
+---
+title: Installation
+description: Step-by-step guide to installing Azul for C and Rust development
+---
+
+## Installing Azul
+
+Getting started with Azul is straightforward. Whether you're using Rust or C, the installation process is designed to be quick and painless. Azul provides pre-built binaries for all supported platforms, along with comprehensive documentation to help you set up your development environment.
+
+<Steps>
+  <Step title="Download Azul" icon="download">
+    Visit the official Azul website and download the appropriate package for your operating system. We provide installers for Windows, macOS, and Linux distributions.
+  </Step>
+  <Step title="Run Installer" icon="play">
+    Execute the installer and follow the on-screen instructions. The installer will automatically configure your system path and install all necessary dependencies.
+  </Step>
+  <Step title="Verify Installation" icon="check">
+    Open a terminal and run `azul --version` to confirm the installation was successful.
+  </Step>
+</Steps>
+
+## Rust Development Setup
+
+For Rust developers, Azul integrates seamlessly with Cargo and the Rust ecosystem. The framework is distributed as a standard Rust crate, making it easy to include in your projects.
+
+<Tabs>
+  <Tab title="Cargo" icon="package">
+    ## Using Cargo
+    
+    Add Azul to your `Cargo.toml`:
+    
+    ````toml
+    [dependencies]
+    azul = "0.1.0"
+    ````
+    
+    Then build your project:
+    
+    ````bash
+    cargo build --release
+    ````
+  </Tab>
+  <Tab title="Cargo Workspace" icon="folder">
+    ## Workspace Setup
+    
+    For larger projects, consider using a Cargo workspace:
+    
+    ````toml
+    [workspace]
+    members = ["app", "ui", "core"]
+    
+    [workspace.dependencies]
+    azul = "0.1.0"
+    ````
+  </Tab>
+</Tabs>
+
+## C Development Setup
+
+Azul provides C bindings that allow you to use the framework from C applications. The C API is designed to be familiar to C developers while providing the same performance benefits.
+
+<CodeGroup tabs="Linux,macOS,Windows">
+  ````bash
+  # Ubuntu/Debian
+  sudo apt update
+  sudo apt install azul-dev
+  ````
+  ````bash
+  # macOS with Homebrew
+  brew install azul
+  ````
+  ````bash
+  # Windows with Chocolatey
+  choco install azul
+  ````
+</CodeGroup>
+
+<Callout kind="info">
+  The C development package includes header files, static libraries, and pkg-config files for easy integration with your build system.
+  </Callout>
+
+## Development Environment
+
+To get the most out of Azul development, we recommend setting up a complete development environment with the necessary tools and dependencies.
+
+<Columns cols={2}>
+  <Card title="Rust Tools" icon="terminal" href="#rust-tools">
+    Install Rust toolchain, Cargo, and development tools for optimal Rust development experience.
+  </Card>
+  <Card title="C Tools" icon="cpu" href="#c-tools">
+    Set up GCC/Clang, Make, and debugging tools for C development with Azul.
+  </Card>
+</Columns>
+
+## Troubleshooting Installation
+
+If you encounter issues during installation, here are some common solutions:
+
+<ExpandableGroup>
+  <Expandable title="Permission Errors" default-open="false">
+    On Unix systems, you may need to run the installer with elevated privileges. Use `sudo` on Linux or run as Administrator on Windows.
+  </Expandable>
+  <Expandable title="Missing Dependencies" default-open="false">
+    Ensure all system dependencies are installed. On Linux, you may need to install additional packages like `libx11-dev` or `libgl1-mesa-dev`.
+  </Expandable>
+  <Expandable title="Path Issues" default-open="false">
+    If Azul commands are not found, check that the installation directory is in your system PATH environment variable.
+  </Expandable>
+</ExpandableGroup>
+
+## Next Steps
+
+Once Azul is installed, you're ready to start building your first application. Check out our getting started guide for a simple "Hello World" example, or explore the API documentation to understand the framework's capabilities.
+
+<Callout kind="success">
+  Congratulations! You're now ready to build amazing desktop applications with Azul.
+</Callout>
